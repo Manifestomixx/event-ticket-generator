@@ -32,7 +32,9 @@ const NavBar = () => {
             </ul>
         </div>
         <div>
+            <Link to="/tickets">
             <button className='px-3 py-2 rounded-2xl gap-3 flex items-center cursor-pointer bg-white text-sm lg:text-base'>MY TICKETS<FaArrowRightLong /></button>
+            </Link>
         </div>
     </div>
     </nav>
