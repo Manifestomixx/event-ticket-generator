@@ -6,7 +6,7 @@ const Events = () => {
 
   return (
     <>
-    <main className="md:h-dvh md:p-10 bg-[url('/src/assets/background.svg')] bg-no-repeat bg-cover bg-center flex justify-center text-white ">
+    <main className="md:min-h-dvh md:p-10 bg-[url('/src/assets/background.svg')] bg-no-repeat bg-cover bg-center flex justify-center text-white ">
     
     
     <Outlet/>
