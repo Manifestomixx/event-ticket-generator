@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TicketProgress, { ticketProcess } from '../components/TicketProgress';
+import PaymentsModal from '../components/PaymentsModal';
+
 
 const SelectTicket = () => {
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketCount, setTicketCount] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   
   const totalSteps = 3;
   const [currentStep, setCurrentStep] = useState(1);
@@ -19,12 +22,25 @@ const SelectTicket = () => {
 
     if (savedTicket !== null) setSelectedTicket(JSON.parse(savedTicket));
     if (savedCount !== null) setTicketCount(JSON.parse(savedCount));
-  }, []);
+  }, [isPaymentModalOpen]);
+
+  const ticketTypes = [
+    { index: 0, price: "Free", type: "REGULAR" },
+    { index: 1, price: "$150", type: "VIP" },
+    { index: 2, price: "$150", type: "VVIP" },
+  ];
 
   const handleSelectTicket = (index) => {
-    setSelectedTicket(index);
-    localStorage.setItem("selectedTicket", JSON.stringify(index));
+    const selectedTicketObj = ticketTypes.find((ticket) => ticket.index === index);
+    setSelectedTicket(selectedTicketObj);
+    localStorage.setItem("selectedTicket", JSON.stringify(selectedTicketObj));
+
+    // Open modal only for paid tickets
+    if (selectedTicketObj.price !== "Free") {
+      setIsPaymentModalOpen(true);
+    }
   };
+
 
   const handleNext = () => {
     if (selectedTicket !== null) {
@@ -38,6 +54,7 @@ const SelectTicket = () => {
       alert("Please select a ticket type.");
     }
   };
+
 
   return (
     <>
@@ -63,16 +80,16 @@ const SelectTicket = () => {
           <div>
             <h3 className='mb-2 text-xs md:text-sm roboto font-extralight'>Select Ticket Type:</h3>
             <div className=' space-y-4 md:space-y-0 md:flex bg-[#041E23] border border-[#07373F] p-3 rounded-2xl justify-between'> 
-              {[{ index: 0, price: "Free", tag: "REGULAR ACCESS", day: "20/52" }, 
-                { index: 1, price: "$150", tag: "VIP ACCESS", day: "20/52" }, 
-                { index: 2, price: "$150", tag: "VVIP ACCESS", day: "20/52" }].map((ticket) => (
+              {[{ index: 0, price: "Free", type: "REGULAR ACCESS", day: "20/52" }, 
+                { index: 1, price: "$150", type: "VIP ACCESS", day: "20/52" }, 
+                { index: 2, price: "$150", type: "VVIP ACCESS", day: "20/52" }].map((ticket) => (
                 <div key={ticket.index} 
-                  className={`border border-[#197686] p-3 md:w-[140px] rounded-2xl transition-all duration-200 cursor-pointer ${
-                    selectedTicket === ticket.index ? "bg-[#12464E]" : "bg-[#052228]"
-                  }`} 
+                className={`border border-[#197686] p-3 md:w-[140px] rounded-2xl transition-all duration-200 cursor-pointer ${
+                  selectedTicket?.index === ticket.index ? "bg-[#12464E]" : "bg-[#052228]"
+                }`}
                   onClick={() => handleSelectTicket(ticket.index)}>
                   <h1 className='text-xl font-semibold roboto mb-2'>{ticket.price}</h1>
-                  <h2 className='text-[12px] roboto font-extralight md:font-light'>{ticket.tag}</h2>
+                  <h2 className='text-[12px] roboto font-extralight md:font-light'>{ticket.type}</h2>
                   <p className='text-[12px] roboto font-light text-gray-300'>{ticket.day}</p>
                 </div>
               ))}
@@ -103,6 +120,11 @@ const SelectTicket = () => {
           </div>
         </div>
       </div>
+
+      {isPaymentModalOpen && (
+  // <PaymentModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} />
+  <PaymentsModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen (false)}/>
+)}
     </>
   );
 };
