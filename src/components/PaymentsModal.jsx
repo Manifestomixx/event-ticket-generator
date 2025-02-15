@@ -45,8 +45,8 @@ const PaymentsModal = ({isOpen, onClose}) => {
         const { error } = await stripe.redirectToCheckout({
             lineItems: [{ price: priceId, quantity: ticketQuantity }],
             mode: "payment",
-            successUrl: "http://localhost:5173/ticket",
-            cancelUrl: "http://localhost:5173/",
+            successUrl: "https://event-ticket-generator-eosin.vercel.app/ticket",
+            cancelUrl: "https://event-ticket-generator-eosin.vercel.app/",
         });
     
         if (error) console.error("Stripe Checkout Error:", error);
